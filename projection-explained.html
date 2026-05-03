@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why a Straight Line on a Mercator Map Lies — As-the-crow-flies</title>
+<meta name="description" content="A plain-English explanation of why straight lines on Mercator world maps don't show the shortest path, why Greenland looks bigger than Africa, and how great-circle routes actually work." />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9523108509589873" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #07101c; --panel: #0e1828; --border: #1f3450;
+    --text: #e7eef7; --muted: #8aa0bd; --accent: #4ea1ff; --accent-2: #ffcc4d; --good: #4dd599; --danger: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(ellipse at top, #0b1a30 0%, #050a13 70%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+  nav { display: flex; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  nav a:hover, nav a.active { color: var(--accent); }
+  h1 { font-size: 32px; margin: 0 0 16px; line-height: 1.25; }
+  h2 { font-size: 22px; margin: 40px 0 12px; color: var(--accent); }
+  h3 { font-size: 17px; margin: 24px 0 8px; color: var(--accent-2); }
+  p, li { color: var(--text); font-size: 16px; }
+  a { color: var(--accent); }
+  .lead { font-size: 18px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
+  .callout {
+    background: var(--panel); border-left: 3px solid var(--accent);
+    padding: 14px 18px; margin: 20px 0; border-radius: 4px; font-size: 15px;
+  }
+  .callout.warn { border-left-color: var(--danger); }
+  .callout.good { border-left-color: var(--good); }
+  blockquote {
+    margin: 16px 0; padding: 8px 18px;
+    border-left: 3px solid var(--border); color: var(--muted);
+    font-style: italic;
+  }
+  .compare-table {
+    width: 100%; border-collapse: collapse; margin: 20px 0;
+    font-size: 14px;
+  }
+  .compare-table th, .compare-table td {
+    padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left;
+  }
+  .compare-table th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .compare-table td.true { color: var(--good); font-weight: 600; }
+  .compare-table td.merc { color: var(--danger); font-weight: 600; }
+  .cta {
+    display: inline-block; margin-top: 16px;
+    background: var(--accent); color: #051023;
+    padding: 10px 18px; border-radius: 8px;
+    font-weight: 700; text-decoration: none;
+  }
+  .cta:hover { filter: brightness(1.1); }
+  footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+  .toc { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 32px; }
+  .toc h4 { margin: 0 0 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .toc li { margin: 4px 0; font-size: 14px; }
+  .toc a { color: var(--text); }
+  .toc a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/projection-explained.html" class="active">Why Mercator Distorts Distance</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+
+  <h1>Why a Straight Line on a Mercator Map Doesn't Show the Shortest Path</h1>
+  <p class="lead">If you've ever drawn a ruler-straight line between two cities on a flat world map, you've been lied to. Here's what's actually happening, why pilots fly "the wrong way," and how to think about distance on a planet that isn't flat.</p>
+
+  <div class="toc">
+    <h4>What's covered</h4>
+    <ol>
+      <li><a href="#the-flat-map-problem">The flat-map problem</a></li>
+      <li><a href="#mercator">What Mercator gets right (and wrong)</a></li>
+      <li><a href="#great-circle">Great-circle routes — the actual shortest path</a></li>
+      <li><a href="#examples">Real-world examples</a></li>
+      <li><a href="#rhumb">Rhumb lines and why ships used Mercator anyway</a></li>
+      <li><a href="#area">A bonus problem: area distortion</a></li>
+      <li><a href="#alternatives">Other projections worth knowing</a></li>
+      <li><a href="#math">The math, very briefly</a></li>
+      <li><a href="#takeaway">Takeaway</a></li>
+    </ol>
+  </div>
+
+  <h2 id="the-flat-map-problem">1. The flat-map problem</h2>
+  <p>The Earth is roughly a sphere. A flat map is, by definition, not. Any time you take a curved surface and squash it onto a flat rectangle, <strong>something has to give</strong>. You can preserve angles, or you can preserve areas, or you can preserve distances along certain lines — but you cannot preserve all three at once. This is a consequence of <em>Gauss's Theorema Egregium</em>, a theorem from 1827 that proves a sphere can't be flattened without distortion. Every flat world map you've ever seen is a compromise.</p>
+  <p>The most common compromise in everyday use — in classrooms, in newspapers, in Google Maps until you zoom out — is the <strong>Mercator projection</strong>, drawn by Flemish cartographer <strong>Gerardus Mercator</strong> in 1569. Mercator's projection preserves <em>angles</em>. That makes it useful for one specific job (more on that later) but the trade-off is that <em>distances and areas get progressively more wrong as you move toward the poles</em>.</p>
+
+  <h2 id="mercator">2. What Mercator gets right — and what it gets wrong</h2>
+  <p>Mercator's clever trick is that lines of constant compass bearing — what sailors call <strong>rhumb lines</strong> — appear as straight lines on his map. If you set your boat's heading to "north-northeast" and never change it, your route on a Mercator chart is a straight line. That's a genuinely useful property for marine navigation in the age of magnetic compasses and no GPS.</p>
+  <p>The price is that everything north of the tropics gets stretched. The math literally divides by the cosine of the latitude — at 60°N (the rough latitude of Oslo or Anchorage) features are stretched by a factor of two. At 80° the stretch is nearly six. This is why on a Mercator map:</p>
+  <ul>
+    <li><strong>Greenland looks roughly the size of Africa.</strong> In reality, Africa is about 14 times larger.</li>
+    <li><strong>Antarctica looks like a giant white wall along the bottom.</strong> It's a continent shaped roughly like Australia, not a global belt.</li>
+    <li><strong>Russia looks like it covers half the planet.</strong> Russia is large — but on Mercator it's exaggerated to about double its real proportional area.</li>
+    <li><strong>Alaska looks bigger than Mexico.</strong> Mexico is the bigger country.</li>
+  </ul>
+  <div class="callout warn">
+    <strong>Common misconception:</strong> "If a flight from New York to Madrid looks like it should go straight across the Atlantic, surely that's the route." It isn't. The straight line on a Mercator map is the rhumb line — a path of constant compass bearing — not the shortest path between the two points.
+  </div>
+
+  <h2 id="great-circle">3. Great-circle routes — the actual shortest path</h2>
+  <p>The shortest path between two points on a sphere lies along a <strong>great circle</strong>: any circle on the surface of the sphere whose center coincides with the center of the sphere. The equator is a great circle. So is every line of longitude. Most great circles, though, are tilted relative to those — they slice the planet at some angle that doesn't align with our familiar grid.</p>
+  <p>If you take a globe (a real, physical one) and stretch a piece of string tight between two cities, the string traces a great circle. That's the route a plane (or, in principle, a missile, or a fiber-optic cable) wants to follow. It's the path that minimises distance on a sphere.</p>
+  <p>On a Mercator map, that same path almost always looks <strong>curved</strong>, often curving toward the nearest pole. People assume the curve means the route is going "out of its way." It isn't. The map is going out of its way. The globe is the truth.</p>
+
+  <h2 id="examples">4. Real-world examples</h2>
+
+  <h3>Oslo → Tokyo</h3>
+  <p>On a flat Mercator map a line from Oslo (≈60°N) to Tokyo (≈36°N) looks like it should go more or less due east, sweeping across Europe, the Caspian region, and the steppes of Central Asia. The real flight path doesn't. It heads <strong>northeast</strong>, climbs over the Arctic, and comes down through Siberia. The <strong>great-circle distance</strong> is about <strong>8,400 km</strong>. The Mercator-ruler "distance" between the same two points reads about <strong>11,800 km</strong> — a 40% overshoot.</p>
+  <p>Pilots have been flying this kind of route since long-haul jet aviation became routine. It just looks weird on the maps we grew up with.</p>
+
+  <h3>New York → Madrid</h3>
+  <p>Looks like a straight Atlantic crossing on a Mercator map. The real shortest path arcs noticeably north — passing close to Newfoundland and the Azores rather than going straight east.</p>
+
+  <h3>Sydney → Buenos Aires</h3>
+  <p>Looks like an unbroken Pacific crossing on Mercator. The real great-circle path bends way south, dipping into the Southern Ocean toward Antarctica. That's why some long-haul southern-hemisphere flights pass surprisingly far south — and why a Mercator map drawn from a single hemisphere makes them look like they're taking a strange detour.</p>
+
+  <h3>Side-by-side comparison</h3>
+  <table class="compare-table">
+    <thead>
+      <tr><th>Route</th><th>True (great-circle)</th><th>Mercator straight-line</th><th>Error</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Oslo → Tokyo</td><td class="true">~8,400 km</td><td class="merc">~11,800 km</td><td>+40%</td></tr>
+      <tr><td>Anchorage → Helsinki</td><td class="true">~6,800 km</td><td class="merc">~9,400 km</td><td>+38%</td></tr>
+      <tr><td>Los Angeles → London</td><td class="true">~8,800 km</td><td class="merc">~11,000 km</td><td>+25%</td></tr>
+      <tr><td>Cape Town → Sydney</td><td class="true">~11,000 km</td><td class="merc">~12,300 km</td><td>+12%</td></tr>
+      <tr><td>Quito → Singapore (near equator)</td><td class="true">~19,400 km</td><td class="merc">~19,500 km</td><td>~0%</td></tr>
+    </tbody>
+  </table>
+  <p>Notice the pattern: the <strong>further from the equator</strong> the cities lie, the larger the Mercator error. Pairs that sit on or near the equator agree closely, because Mercator's distortion is essentially zero at the equator and grows toward the poles.</p>
+
+  <h2 id="rhumb">5. Rhumb lines and why ships used Mercator anyway</h2>
+  <p>So if Mercator gets distance wrong, why did sailors use it for centuries? Because in pre-GPS marine navigation, the practical question wasn't <em>"what's the shortest path?"</em> — it was <em>"what's the path I can actually steer?"</em> A great-circle route requires you to constantly change compass heading, sometimes by tens of degrees. That's hard to do on a wooden ship with a magnetic compass and a sextant. A rhumb line — the straight line on Mercator — has a single constant heading. You set your sails, tie the wheel, and the ship walks the line. Slightly longer in distance, vastly easier in practice.</p>
+  <p>Modern aviation has the opposite problem. Aircraft can adjust heading continuously, fuel matters more than steering simplicity, and the saved kilometres translate directly into saved fuel and time. So flights fly great circles, even though they look like detours.</p>
+  <div class="callout">
+    <strong>Both lines are real.</strong> The great-circle line and the rhumb line are both legitimate paths between two points — they just optimise for different things. Shortest distance versus simplest steering. The visualization tool on this site shows both at once so you can see the tradeoff.
+  </div>
+
+  <h2 id="area">6. A bonus problem: area distortion</h2>
+  <p>Distance is just one of Mercator's distortions. Area is the other big one, and it has cultural consequences worth knowing about. Because countries near the poles are inflated, the relative size of nations on standard world maps is misleading in ways that subtly shape how people picture the world.</p>
+  <ul>
+    <li><strong>Africa is enormous.</strong> All of the United States, China, India, Western Europe, Mexico, Japan, and a good chunk of Eastern Europe could fit inside Africa. On most Mercator maps it doesn't look that way.</li>
+    <li><strong>Brazil is bigger than the contiguous United States.</strong></li>
+    <li><strong>Antarctica is roughly the size of the United States plus Mexico</strong> — not a band stretching across the entire bottom of the world.</li>
+  </ul>
+  <p>The "<a href="https://thetruesize.com/" target="_blank" rel="noopener">True Size</a>" tool — and many similar online toys — let you drag countries around to see their real proportional sizes on the same Mercator map. It's an eye-opening exercise.</p>
+
+  <h2 id="alternatives">7. Other projections worth knowing</h2>
+  <p>If Mercator is so problematic, why is it still everywhere? Mostly inertia, plus its mathematical convenience for tile-based web maps (Google Maps' tiles are square at every zoom level because of Mercator). But cartographers have produced dozens of alternatives, each with its own trade-offs.</p>
+  <ul>
+    <li><strong>Robinson</strong> — the long-time National Geographic favourite. Compromises everything a little, distorts nothing too badly. Pleasant to look at.</li>
+    <li><strong>Winkel Tripel</strong> — National Geographic's current default, since 1998. Even balance between area, distance, and shape distortion.</li>
+    <li><strong>Mollweide</strong> — preserves areas exactly. Often used for showing global statistics where relative size matters.</li>
+    <li><strong>Equal Earth</strong> (2018) — a modern equal-area projection designed for general-purpose use. Increasingly common in academic and journalistic maps.</li>
+    <li><strong>Azimuthal equidistant</strong> — preserves distance from a single chosen point. The flag of the United Nations is one centred on the North Pole.</li>
+    <li><strong>The globe</strong> — no flat-map distortion at all. The only way to see real distances and real areas without compromise is to look at a sphere. Which is what this tool does.</li>
+  </ul>
+
+  <h2 id="math">8. The math, very briefly</h2>
+  <p>For the curious, the great-circle distance between two latitude/longitude points <code>(φ₁, λ₁)</code> and <code>(φ₂, λ₂)</code> on a sphere of radius <em>R</em> is given by the <strong>haversine formula</strong>:</p>
+  <pre style="background: #0a1424; color: var(--text); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px;">a = sin²(Δφ/2) + cos(φ₁) · cos(φ₂) · sin²(Δλ/2)
+c = 2 · atan2(√a, √(1−a))
+d = R · c</pre>
+  <p>For Earth, <em>R</em> ≈ 6,371 km. Plug in the latitudes and longitudes in radians and you get distance in kilometres. This formula handles even antipodal points well — better than the simpler "law of cosines" form which suffers from floating-point precision loss for nearby points.</p>
+  <p>Mercator's projection, by contrast, maps latitude <code>φ</code> to a vertical coordinate <em>y</em> via:</p>
+  <pre style="background: #0a1424; color: var(--text); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px;">y = ln(tan(π/4 + φ/2))</pre>
+  <p>That logarithm is what makes near-polar latitudes blow up — and why every Mercator map you've ever seen cuts off the poles at around ±85°.</p>
+
+  <h2 id="takeaway">9. Takeaway</h2>
+  <p>The Mercator projection is a marvellous mathematical achievement and an excellent navigation chart. It's also a poor general-purpose map of the world, because the trade-offs it makes — preserving angle at the cost of area and distance — happen to be the trade-offs <em>least</em> aligned with the things most people want from a world map: a sense of how big places are and how far apart they sit.</p>
+  <p>The good news is, the modern web makes the alternative easy. You can spin a real 3D globe in any browser, drop two cities on it, and see the actual great-circle path bend across the planet — no flat-map distortion, no mental gymnastics. That's what this site is for.</p>
+
+  <a href="/" class="cta">Try it on the globe →</a>
+
+  <footer>
+    Further reading: <a href="https://en.wikipedia.org/wiki/Mercator_projection" target="_blank" rel="noopener">Mercator projection (Wikipedia)</a> · <a href="https://en.wikipedia.org/wiki/Great-circle_distance" target="_blank" rel="noopener">Great-circle distance</a> · <a href="https://en.wikipedia.org/wiki/Theorema_Egregium" target="_blank" rel="noopener">Theorema Egregium</a>
+    <br><br>
+    © As-the-crow-flies · <a href="/">Home</a> · <a href="/privacy.html">Privacy</a> · <a href="/contact.html">Contact</a>
+  </footer>
+</div>
+</body>
+</html>

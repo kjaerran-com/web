@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — As-the-crow-flies</title>
+<meta name="description" content="About As-the-crow-flies, a tool for measuring true distances on Earth using great-circle math instead of Mercator projection." />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9523108509589873" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #07101c; --panel: #0e1828; --border: #1f3450;
+    --text: #e7eef7; --muted: #8aa0bd; --accent: #4ea1ff; --accent-2: #ffcc4d;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(ellipse at top, #0b1a30 0%, #050a13 70%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+  nav { display: flex; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  nav a:hover, nav a.active { color: var(--accent); }
+  h1 { font-size: 32px; margin: 0 0 16px; }
+  h2 { font-size: 20px; margin: 32px 0 8px; color: var(--accent); }
+  p, li { color: var(--text); font-size: 15px; }
+  a { color: var(--accent); }
+  .lead { font-size: 17px; color: var(--muted); margin-bottom: 32px; }
+  .feature-list { padding-left: 20px; }
+  .feature-list li { margin-bottom: 10px; }
+  .cta {
+    display: inline-block; margin-top: 16px;
+    background: var(--accent); color: #051023;
+    padding: 10px 18px; border-radius: 8px;
+    font-weight: 700; text-decoration: none;
+  }
+  .cta:hover { filter: brightness(1.1); }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about.html" class="active">About</a>
+    <a href="/projection-explained.html">Why Mercator Distorts Distance</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+
+  <h1>About As-the-crow-flies</h1>
+  <p class="lead">A small tool for seeing the true distance between places on Earth — measured along a great circle on a 3D globe, not distorted by the Mercator projection that dominates flat world maps.</p>
+
+  <h2>Why this exists</h2>
+  <p>Most world maps you see use the <strong>Mercator projection</strong>. It's brilliant for marine navigation because it preserves direction (a constant compass bearing is a straight line), but it badly distorts <em>distance</em> and <em>area</em>. Greenland looks larger than Africa even though Africa is 14 times bigger. A flight from Oslo to Tokyo looks like it should sweep through Europe and Central Asia, but actually arcs over the Arctic — because the shortest path on a sphere is rarely the straight line you'd draw on a flat map.</p>
+  <p>This site lets you see what the real distance is, on a real globe, between any two cities or countries on Earth. You can:</p>
+  <ul class="feature-list">
+    <li>Search any city worldwide and add multiple stops to plot a route along great-circle arcs.</li>
+    <li>Compare two countries — both are highlighted on the globe and the closest border-to-border distance is calculated.</li>
+    <li>Toggle a Mercator-error mode to see, side by side, the true distance and the misleading "straight line on a flat map" that a Mercator chart would suggest.</li>
+  </ul>
+
+  <h2>How it works</h2>
+  <p>Distances are calculated using the <strong>haversine formula</strong>, which gives the great-circle distance between two latitude/longitude points on a sphere. The 3D globe is rendered with WebGL via Three.js. Country outlines come from the public-domain Natural Earth dataset. City search uses the free Open-Meteo Geocoding API for global coverage.</p>
+
+  <h2>Open data and free tools</h2>
+  <p>This site builds on free, open resources:</p>
+  <ul>
+    <li><a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a> — public-domain country and admin boundary data.</li>
+    <li><a href="https://open-meteo.com/en/docs/geocoding-api" target="_blank" rel="noopener">Open-Meteo Geocoding API</a> — free worldwide city search.</li>
+    <li><a href="https://threejs.org/" target="_blank" rel="noopener">Three.js</a> — WebGL 3D rendering.</li>
+  </ul>
+
+  <h2>About the site</h2>
+  <p>As-the-crow-flies is a small independent project. It's free to use, contains no tracking beyond standard server logs and ad-related cookies, and has no account or paywall. The site is supported by display advertising — see our <a href="/privacy.html">Privacy Policy</a> for details on how ads work here.</p>
+
+  <p>Questions, suggestions, or corrections (especially border-data inaccuracies)? See the <a href="/contact.html">Contact</a> page.</p>
+
+  <a href="/" class="cta">Try the globe →</a>
+
+  <footer>
+    © As-the-crow-flies · <a href="/">Home</a> · <a href="/privacy.html">Privacy</a> · <a href="/contact.html">Contact</a>
+  </footer>
+</div>
+</body>
+</html>
